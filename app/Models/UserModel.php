@@ -12,6 +12,9 @@ class UserModel extends Model
     use HasApiTokens;
     use HasFactory;
     protected $table="users";
+    protected $fillable = [
+        'device_token',
+    ];
 
     public function userfind($email,$password){
       $data=DB::table('users')->where("email",$email)

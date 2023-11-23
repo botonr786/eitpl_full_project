@@ -17,20 +17,22 @@ class Helper
 	 * @version:    1.0.0.5
 	 * @author:     Somnath Mukherjee
 	 */
-    
-    public static function resp($message = '', $status = 200, $data = [],$token= [])
-	{
-		return [
-			'status'  => $status,
-			'message' => $message,
-			'data'    => $data,
-            'token' =>$token,
-		];
-	}
 
-     public static function rj($message = '', $headerStatus = 200, $data = [],$token= [])
-	{
-		$data = self::resp($message, $headerStatus, $data,$token);
-		return response()->json($data, $headerStatus);
-	}
+     public static function resp($message = '', $flag = 1, $data = [], $token = [])
+    {
+        $status = 200;
+        return [
+            'status'  => $status,
+            'flag'    => $flag,
+            'message' => $message,
+            'data'    => $data,
+            'token'   => $token,
+        ];
+    }
+
+    public static function rj($message = '', $flag = 1, $data = [], $token = [])
+    {
+        $response = self::resp($message, $flag, $data, $token);
+        return response()->json($response, $response['status']);
+    }
 }
