@@ -1757,6 +1757,7 @@ Route::get('pis/getremidnamepaykkByIdnew/{empid}', function ($empid) {
         )
         ->groupBy('in_id')
         ->get();
+        // dd($bill_rs);
 
     $result_status1 = "  <option value=''>&nbsp;</option>
 ";

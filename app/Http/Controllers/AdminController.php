@@ -1672,7 +1672,7 @@ class AdminController extends Controller
                 $data['or_rs'] = DB::Table('registration')
                     ->where('status', '=', 'active')
                     ->where('verify', '=', 'approved')
-                    ->where('licence', '=', 'yes')
+                    // ->where('licence', '=', 'yes')
                     ->get();
 
                 $userlist = array();
@@ -7994,7 +7994,7 @@ class AdminController extends Controller
         }
     }
 
-    public function viewAddNewoffday()
+    public function viewAddNewoffday(Request $request)
     {
         try {
             $email = Session::get('empsu_email');
@@ -8009,10 +8009,10 @@ class AdminController extends Controller
                     }
                 }
 
-                $id = base64_decode(Input::get('id'));
+                $id = base64_decode($request->get('id'));
 
                 $data['departs'] = DB::table('users_admin_emp')->get();
-                if (Input::get('id')) {
+                if ($request->get('id')) {
                     $dt = DB::table('offday_emp')->where('id', '=', $id)->first();
                     if (!empty($dt)) {
                         $data['shift_management'] = DB::table('offday_emp')->where('id', '=', $id)->first();
@@ -8040,9 +8040,9 @@ class AdminController extends Controller
             if (!empty(Session::get('empsu_email'))) {
                 $email = Session::get('empsu_email');
 
-                if (Input::get('id')) {
+                if ($request->get('id')) {
 
-                    $id = base64_decode(Input::get('id'));
+                    $id = base64_decode($request->get('id'));
                     $ckeck_email = DB::table('offday_emp')->where('employee_id', '=', $request->employee_id)->where('id', '!=', $id)->first();
                     if (!empty($ckeck_email)) {
                         Session::flash('message', 'Offday Information For The Employee  Already Exists.');
@@ -15265,17 +15265,19 @@ class AdminController extends Controller
         try {
 
             $email = Session::get('empsu_email');
+           
             if (!empty($email)) {
+                // dd($request->emidname);
                 $data['organisation'] = DB::Table('registration')
                     ->where('com_name', '=', $request->emidname)
                 //    ->where('status', '=', 'active')
                 // ->orWhere('verify', '=', 'approved')
                 // ->orWhere('licence', '=', 'yes')
                     ->first();
+                // dd("hello");
+                // dd($data['organisation']);
 
-                //dd($data['organisation']);
-
-                $ins_data = array(
+                $ins_data=array(
                     'candidate_name' => $request->candidate_name,
                     'address' => $request->address,
                     'employer_id' => $data['organisation']->id,
@@ -15285,7 +15287,7 @@ class AdminController extends Controller
                     'status' => 'A',
                 );
 
-                //dd($ins_data);
+                // dd($ins_data);
 
                 DB::table('invoice_candidates')->insert($ins_data);
 
@@ -15325,9 +15327,10 @@ class AdminController extends Controller
 
                 $data['or_rs'] = DB::Table('registration')
                     ->where('status', '=', 'active')
-                // ->orWhere('verify', '=', 'approved')
+                ->orWhere('verify', '=', 'approved')
                 // ->orWhere('licence', '=', 'yes')
                     ->get();
+                    // dd($data['or_rs']);
 
                 // $userlist = array();
                 // foreach ($data['bill_rs'] as $user) {
@@ -15417,7 +15420,7 @@ class AdminController extends Controller
 
                 $data['candidate'] = DB::Table('invoice_candidates')->where('id', '=', $candidateId)->first();
 
-                //dd($data['candidate']->id);
+                // dd($data['candidate']);
 
                 $data['organisation'] = DB::Table('registration')
                     ->where('id', '=', $data['candidate']->employer_id)

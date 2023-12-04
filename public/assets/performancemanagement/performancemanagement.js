@@ -101,8 +101,8 @@ function getEmployeeDetails(id) {
 }
 function setEmployeeDetailsInForm(data) {
   if (data) {
-    $("#job_title").val(data?.emp_designation);
-    $("#doj").val(moment(new Date(data?.emp_doj)).format("DD/MM/YYYY"));
+    $("#job_title").val(data?.designation);
+    $("#doj").val(moment(new Date(data?.dateofbirth)).format("DD/MM/YYYY"));
     $("#rep_auth").val(
       data?.rep_fname +
         (data?.rep_mname ? " " + data?.rep_mname : "") +

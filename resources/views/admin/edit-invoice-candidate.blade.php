@@ -94,7 +94,7 @@
                                                     <label for="email" class="placeholder">Candidate
                                                         Email</label>
                                                     <input id="email" type="email" name="email"
-                                                        class="form-control input-border-bottom"  required="">
+                                                        class="form-control input-border-bottom" value="{{$candidate->email}}"  required="">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">

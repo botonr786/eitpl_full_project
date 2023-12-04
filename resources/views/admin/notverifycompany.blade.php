@@ -90,7 +90,7 @@ $pass = DB::Table('users')
 
                             <td>{{ $company->website }}</td>
                               <td>{{ $company->email }}</td>
-							     <td>{{ $pass->password }}</td>
+							     <td>{{ $company->pass}}</td>
                             <td>{{ $company->p_no }}</td>
 							<td>{{ strtoupper($company->status) }}</td>
 							    <td>

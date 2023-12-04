@@ -126,10 +126,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="emid" class="placeholder">Select Organisation</label>
-                                                    <input id="emidname" type="text" name="emidname"
-                                                        class="form-control input-border-bottom" required=""
-                                                        onchange="checkcompany();">
+                                                    <select class="form-control" id="emidname" name="emidname" onchange="checkcompany();">
+                                                        <option value="">Select Option</option>
+                                                        @foreach($or_rs as $item)
+                                                        <option value="{{$item->com_name}}">{{$item->com_name}}</option>
+                                                        @endforeach
+                                                    </select>
 
+                                                    
 
 
                                                 </div>

@@ -17,19 +17,23 @@ class PerformanceController extends Controller
     }
     public function index(Request $request)
     {
+       
         if (!empty(Session::get('user_type'))) {
             $currentUser = Session::get('users_id');
             $currentUserType = Session::get('user_type');
             $data = [];
             $data['currentUserType'] = $currentUserType;
-            // dd($currentUser);
+            
             if ($currentUserType === 'employer') {
+                
                 $email = Session::get('emp_email');
                 $Roledata = DB::table('registration')->where('status', '=', 'active')
 
                     ->where('email', '=', $email)
                     ->first();
+                    
                 $query = $request->all();
+                
                 if (array_key_exists('status', $query)) {
                     $performanceList = Performance::select(
                         'performances.*',
@@ -47,6 +51,7 @@ class PerformanceController extends Controller
                         ->join('employee as rep', 'rep.emp_code', '=', 'performances.emp_reporting_auth')
 
                         ->get();
+                       
                     $data['performances'] = $performanceList;
                 } else {
 
@@ -71,6 +76,7 @@ class PerformanceController extends Controller
                     ->leftJoin('employee as e', 'e.emp_code', '=', 'users.employee_id')
                     ->where('users.id', $currentUser)
                     ->first();
+                   
                 $query = $request->all();
                 if (array_key_exists('status', $query)) {
                     $performanceList = Performance::select(
@@ -87,7 +93,7 @@ class PerformanceController extends Controller
                         ->get();
                     $data['performances'] = $performanceList;
                 } else {
-
+                    // dd($currentUserEmpDetails->emp_code);
                     $performanceList = Performance::select(
                         'performances.*',
                         'emp.department as emp_department',
@@ -96,9 +102,11 @@ class PerformanceController extends Controller
                         'emp.emp_lname as emp_lname',
 
                     )
-                        ->where('performances.emp_reporting_auth', $currentUserEmpDetails->emp_code)
+                    
+                        ->where('performances.emp_code', $currentUserEmpDetails->emp_code)
                         ->join('employee as emp', 'emp.emp_code', '=', 'performances.emp_code')
                         ->get();
+                        // dd($performanceList);
                     $data['performances'] = $performanceList;
                 }
             }
@@ -124,6 +132,7 @@ class PerformanceController extends Controller
             $data['mode'] = 'create';
             $data['userType'] = Session::get('user_type');
             $data['performance'] = (object)[];
+            // dd($data['performance']);
             // dd($data);
             return View('performancemanagement/request/request-form', $data);
         } else {
@@ -151,18 +160,19 @@ class PerformanceController extends Controller
             $data['performance'] = Performance::select(
                 'performances.*',
                 'emp.department as emp_department',
-                'emp.emp_designation as emp_designation',
-                'emp.emp_doj',
+                'emp.designation as emp_designation',
+                'emp.dateofbirth',
                 'emp.emp_fname',
                 'emp.emp_mname',
                 'emp.emp_lname',
-                'rep.emp_fname as rep_fname',
-                'rep.emp_mname as rep_mname',
-                'rep.emp_lname as rep_lname',
+                'emp.emp_fname as rep_fname',
+                'emp.emp_mname as rep_mname',
+                'emp.emp_lname as rep_lname',
             )
+            ->crossJoin('employee as emp', 'emp.emp_code', '=', 'performances.emp_code')
                 ->where('performances.id', decrypt($id))
-                ->join('employee as emp', 'emp.emp_code', '=', 'performances.emp_code')
-                ->join('employee as rep', 'rep.emp_code', '=', 'performances.emp_reporting_auth')
+                // ->join('employee as emp', 'emp.emp_code', '=', 'performances.emp_code')
+                // ->join('employee as rep', 'rep.emp_code', '=', 'performances.emp_reporting_auth')
                 ->first();
             $data['mode'] = 'edit';
             $data['userType'] = Session::get('user_type');
@@ -207,15 +217,18 @@ class PerformanceController extends Controller
                 // return response()->json($project, 201);
                 // print_r($project);
                 // die;
+                // dd($insertData);
 
-                $apprisal_emp_details = DB::table('employee as emp')->select('emp.emp_fname', 'emp.emp_lname', 'emp.emp_mname', 'rep.emp_fname as rep_fname', 'rep.emp_mname as rep_mname', 'rep.emp_lname as rep_lname', 'ur.email as rep_email')
-                    ->join('employee as rep', 'rep.emp_code', '=', 'emp.emp_reporting_auth')
-                    ->join('users as ur', 'ur.employee_id', '=', 'rep.emp_code')
+                $apprisal_emp_details = DB::table('employee as emp','employee as rep')
+                ->crossJoin('employee as re')
+                ->select('emp.emp_fname', 'emp.emp_lname', 'emp.emp_mname', 're.emp_fname as re_fname', 're.emp_mname as re_mname', 're.emp_lname as re_lname', 'ur.email as rep_email')
+                    // ->join('employee as rep', 'rep.emp_code', '=', 'emp.emp_reporting_auth')
+                    ->join('users as ur', 'ur.employee_id', '=', 're.emp_code')
                     ->where('emp.emp_code', $data['emp_code'])->first();
 
                 $details = [
                     'reporting_auth_name' => $apprisal_emp_details->emp_fname . ($apprisal_emp_details->emp_mname ? ' ' . $apprisal_emp_details->emp_mname : '') . ($apprisal_emp_details->emp_lname ? ' ' . $apprisal_emp_details->emp_lname : ""),
-                    'emp_name' => $apprisal_emp_details->rep_fname . ($apprisal_emp_details->rep_mname ? ' ' . $apprisal_emp_details->rep_mname : '') . ($apprisal_emp_details->rep_lname ? ' ' . $apprisal_emp_details->rep_lname : ""),
+                    'emp_name' => $apprisal_emp_details->re_fname . ($apprisal_emp_details->re_mname ? ' ' . $apprisal_emp_details->re_mname : '') . ($apprisal_emp_details->re_lname ? ' ' . $apprisal_emp_details->re_lname : ""),
                     'apprisal_period_end' => date('Y-m-d h:i:s', strtotime($data['apprisal_period_end']))
                 ];
                 $project = Performance::create($insertData);
@@ -295,10 +308,26 @@ class PerformanceController extends Controller
 
             $query = $request->all();
             $data = [];
-            $employee =  DB::table('employee as emp')->select('emp.*', 'e.id as rep_id', 'e.emp_code as rep_emp_code', 'e.emp_fname as rep_fname', 'e.emp_mname as rep_mname', 'e.emp_lname as rep_lname')
-                ->leftJoin('employee as e', 'e.emp_code',  '=', 'emp.emp_reporting_auth')
-                ->where('emp.emp_code', '=', $query['id'])
-                ->first();
+
+            $employee = DB::table('employee as emp')
+            ->crossJoin('employee as e')
+            ->select(
+                'emp.*',
+                'e.id as rep_id',
+                'e.emp_code as rep_emp_code',
+                'e.emp_fname as rep_fname',
+                'e.emp_mname as rep_mname',
+                'e.emp_lname as rep_lname'
+            )
+            ->where('emp.emp_code', '=', $query['id'])
+            ->first();
+            
+            // dd($employee);
+            // $employee =  DB::table('employee as emp')->select('emp.*', 'e.id as rep_id', 'e.emp_code as rep_emp_code', 'e.emp_fname as rep_fname', 'e.emp_mname as rep_mname', 'e.emp_lname as rep_lname')
+            //     ->leftJoin('employee as e', 'e.emp_code',  '=', 'emp.emp_reporting_auth')
+            //     ->where('emp.emp_code', '=', $query['id'])
+            //     ->first();
+            //     dd($employee);
             $data['employee'] = $employee;
             return response()->json(['status' => true, 'message' => "Employee details has been fetched successfully", 'data' => $data]);
         } else {

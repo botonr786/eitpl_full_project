@@ -23,6 +23,7 @@ Route::group(['prefix' => 'v1/', 'middleware' => ['api']], function () {
 });
 Route::group(['middleware' => ['auth:api']], function () {
 	Route::post('attentences','App\Http\Controllers\Api\AttentenceController@attentenceAdd');
+	Route::get('listAttendence','App\Http\Controllers\Api\AttentenceController@attendenceList');
 });
 
 
