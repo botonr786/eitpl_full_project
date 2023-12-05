@@ -57,7 +57,7 @@ class LoginController extends Controller
 
             if ($checkuser == null) {
                 $dynamicFlag = 0;
-                return Helper::rj("Not a valid credential.",$dynamicFlag);
+                return Helper::rj("Not a valid credential",$dynamicFlag);
             }
             $data = UserModel::where("email", $request->email)->first();
             $token = $data->createToken("token")->accessToken;

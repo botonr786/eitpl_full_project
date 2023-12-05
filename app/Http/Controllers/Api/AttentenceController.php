@@ -41,11 +41,11 @@ class AttentenceController extends Controller
             $user = Auth::guard("api")->user();
             $day = now()->format('l');
            
-                $emp_code = $user->employee_id;
+                $emp_codes = $request->emp_id;
                 $date = date("Y-m-d");
                 $month = date("m/Y", strtotime("now"));
                 //employee check validation
-                $emp_check = $this->_model->checkEmployee($emp_code);
+                $emp_check = $this->_model->checkEmployee($emp_codes);
 
                 if ($emp_check == null) {
                     return Helper::rj("Employee Not Found", 1);
@@ -136,8 +136,6 @@ class AttentenceController extends Controller
                             );
                         }
 
-                        $dutyhourseDuration=Attendance::where("id",$attendenceId->id)->first();
-
                         $response = Attendance::where("id", $attendenceId->id)->update([
                             "time_out" => $request->time_in,
                             "time_out_location" => $request->time_in_location,
@@ -172,7 +170,7 @@ class AttentenceController extends Controller
 public function attendenceList(Request $request){
     try{
         $user = Auth::guard("api")->user();
-        $emp_code=$user->employee_id;
+        $emp_code=$request->emp_id;
         $startDate=[];
         $endDate=[];
         $lastDate=[];
@@ -255,6 +253,14 @@ public function attendenceList(Request $request){
          }else{
 
          }
+    }catch(Exception $e){
+        return Helper::rj("Server Error.", 500);
+    }
+}
+
+public function attendenceGraph(){
+    try{
+
     }catch(Exception $e){
         return Helper::rj("Server Error.", 500);
     }
