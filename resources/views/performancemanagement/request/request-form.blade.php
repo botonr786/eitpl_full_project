@@ -1,7 +1,7 @@
 @extends('performancemanagement.layouts.master')
 
 @section('title')
-BELLEVUE - Performance Management
+CLIMBR - Performance Management
 @endsection
 
 @section('sidebar')
@@ -182,10 +182,7 @@ BELLEVUE - Performance Management
 
                                     </div>
                                     @endif
-                                    <?php
-
-
-                                    ?>
+                                   
                                     
                                     <div class="row">
                                         <div class="col-md-4 btn-up">
@@ -193,7 +190,7 @@ BELLEVUE - Performance Management
                                             <!-- <button type="submit" class="btn btn-danger btn-sm" id="btn_project_create">Submit</button> -->
                                             <button class="btn btn-default" type="submit" id="btn_performance_request_create">Submit</button>
                                             @else
-                                            @if($mode=='edit' && (strtotime($performance->apprisal_period_start)<=time() && strtotime($performance->apprisal_period_end)>=time()))
+                                            @if($mode=='edit')
                                                 <button class="btn btn-default" type="submit" id="btn_performance_request_update">Submit</button>
                                                 @endif
                                                 @endif

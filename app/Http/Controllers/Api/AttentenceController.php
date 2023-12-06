@@ -258,9 +258,41 @@ public function attendenceList(Request $request){
     }
 }
 
-public function attendenceGraph(){
+public function attendenceGraph(Request $request){
     try{
-
+        $user = Auth::guard("api")->user();
+       
+        $emp_code=$request->emp_id;
+        $emp=DB::table('employee')->where('emp_code',$emp_code)->first();
+        $currentYear = date('Y'); 
+        $result = DB::table('attandence')
+            ->select(DB::raw('SUM(duty_hours) as total_hour'),'month')
+            ->where('employee_code', $emp_code)
+            ->whereYear('date', $currentYear)
+            ->groupBy('month')
+            ->get();
+         if(sizeof($result)){
+        return response(array('flag'=>1, 'status'=>200,'message'=>'Attendence Graph List','response' => [
+            // 'report' => [
+                // 'fullDay' => $fullDayCount,
+                // 'halfDay' => $halfDayCount,
+                // 'totalWorkingDay' => 22,
+                // 'absent' => 4,
+            // ],
+            'data' => $result,
+        ],));
+    }else{
+        return response(array('flag'=>0, 'status'=>400,'message'=>'Not Found','response' => [
+            // 'report' => [
+                // 'fullDay' => $fullDayCount,
+                // 'halfDay' => $halfDayCount,
+                // 'totalWorkingDay' => 22,
+                // 'absent' => 4,
+            // ],
+            'data' => $result,
+        ],));
+    }
+        
     }catch(Exception $e){
         return Helper::rj("Server Error.", 500);
     }
