@@ -40,7 +40,7 @@ class AttentenceController extends Controller
         try {
             $user = Auth::guard("api")->user();
             $day = now()->format('l');
-           
+
                 $emp_codes = $request->emp_id;
                 $date = date("Y-m-d");
                 $month = date("m/Y", strtotime("now"));
@@ -71,7 +71,7 @@ class AttentenceController extends Controller
                     }else{
                         return response(['flag'=>0,'status'=>400, 'message'=>'not Login','todayLogin'=>false, 'todayLogout'=>false,'isHoliday'=>false]);
                     }
-                    
+
                     }
                     if ($request->type === "login") {
                         if (!sizeof($checkAtten)) {
@@ -174,9 +174,9 @@ public function attendenceList(Request $request){
         $startDate=[];
         $endDate=[];
         $lastDate=[];
-      
+
         if(request()->query('gm')){
-            
+
             $selectedMonth = Carbon::parse(request()->query('gm'))->format('m'); // Extract month from the given date
             $startOfMonth = Carbon::now()->month($selectedMonth)->startOfMonth();
             $endOfMonth = Carbon::now()->month($selectedMonth)->endOfMonth();
@@ -194,10 +194,10 @@ public function attendenceList(Request $request){
          //count holyday
          $lastDateString=implode(',', $lastDate);
         //  dd($lastDateString);
-         
-         
+
+
          if($user->user_type==="employee"){
-           
+
             $data = Attendance::whereBetween('date', [$startDateString, $endDateString])
             ->where('employee_code', $emp_code)
             ->get();
@@ -207,14 +207,14 @@ public function attendenceList(Request $request){
             ->where('duty_hours', '<=', '5')
             ->get();
             $halfDayCount = $halfDayData->count();
-        
+
 
             $fullDayData = Attendance::whereBetween('date', [$startDateString, $endDateString])
             ->where('employee_code', $emp_code)
             ->where('duty_hours', '>=', '5')
             ->get();
             $fullDayCount = $fullDayData->count();
-            
+
             $totakWorkingDay=22;
             if(sizeof($data)){
                 return response([
@@ -231,7 +231,7 @@ public function attendenceList(Request $request){
                         'data' => $data,
                     ],
                 ]);
-                
+
             }else{
                 return response([
                     'flag' => 0,
@@ -248,7 +248,7 @@ public function attendenceList(Request $request){
                     ],
                 ]);
             }
-           
+
 
          }else{
 
@@ -259,41 +259,37 @@ public function attendenceList(Request $request){
 }
 
 public function attendenceGraph(Request $request){
+
     try{
         $user = Auth::guard("api")->user();
-       
         $emp_code=$request->emp_id;
         $emp=DB::table('employee')->where('emp_code',$emp_code)->first();
-        $currentYear = date('Y'); 
+        $currentYear = date('Y');
         $result = DB::table('attandence')
-            ->select(DB::raw('SUM(duty_hours) as total_hour'),'month')
-            ->where('employee_code', $emp_code)
-            ->whereYear('date', $currentYear)
-            ->groupBy('month')
-            ->get();
+                    ->select(
+                        DB::raw('SUM(duty_hours) as total_actual_hour'),
+                        DB::raw('(CASE
+                                    WHEN MONTH(date) IN (4, 6, 9, 11) THEN 23
+                                    WHEN MONTH(date) = 2 THEN 20
+                                    ELSE 22
+                                END * 8) as total_static_hour'),
+                        DB::raw('MONTH(date) as month')
+                    )
+                    ->where('employee_code', $emp_code)
+                    ->whereYear('date', $currentYear)
+                    ->groupBy(DB::raw('MONTH(date)'))
+                    ->get();
          if(sizeof($result)){
         return response(array('flag'=>1, 'status'=>200,'message'=>'Attendence Graph List','response' => [
-            // 'report' => [
-                // 'fullDay' => $fullDayCount,
-                // 'halfDay' => $halfDayCount,
-                // 'totalWorkingDay' => 22,
-                // 'absent' => 4,
-            // ],
             'data' => $result,
         ],));
-    }else{
+        }else{
         return response(array('flag'=>0, 'status'=>400,'message'=>'Not Found','response' => [
-            // 'report' => [
-                // 'fullDay' => $fullDayCount,
-                // 'halfDay' => $halfDayCount,
-                // 'totalWorkingDay' => 22,
-                // 'absent' => 4,
-            // ],
             'data' => $result,
         ],));
-    }
-        
-    }catch(Exception $e){
+        }
+
+     }catch(Exception $e){
         return Helper::rj("Server Error.", 500);
     }
 }
