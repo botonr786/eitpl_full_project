@@ -25,6 +25,11 @@ Route::group(['middleware' => ['auth:api']], function () {
 	Route::post('attentences','App\Http\Controllers\Api\AttentenceController@attentenceAdd');
 	Route::get('listAttendence','App\Http\Controllers\Api\AttentenceController@attendenceList');
 	Route::post('graphAttendence','App\Http\Controllers\Api\AttentenceController@attendenceGraph');
+
+    //Leave Route
+    Route::post('leave-type','App\Http\Controllers\Api\LeaveController@leaveType');
+    Route::post('leave-list','App\Http\Controllers\Api\LeaveController@leaveList');
+    Route::post('leave-apply','App\Http\Controllers\Api\LeaveController@leaveApply');
 });
 
 
