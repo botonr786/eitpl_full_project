@@ -64,10 +64,33 @@ class AttentenceController extends Controller
                     // attentence login
                     $todayLogin=['todayLogin'=>false];
                     if($request->type ==null){
-                    $nowdaycheck=Attendance::where('date',$date)->first();
-                    // dd($nowdaycheck);
+                    $nowdaycheck=Attendance::where('date',$date)
+                     ->where("employee_code", $emp_code)
+                    ->first();
+                   
+                    
+                   
                     if($nowdaycheck){
-                        return Helper::res("Alredy login", 1,$nowdaycheck,true,false,true);
+                        
+                        if (isset($nowdaycheck->logoutStatus)) {
+                            if ($nowdaycheck->logoutStatus == 1) {
+                                return Helper::res("Already logged in", 1, $nowdaycheck, true, false, true);
+                            } else {
+                                return Helper::res("Already logged in", 1, $nowdaycheck, true, false, false);
+                            }
+                        } else {
+                            // Handle the case when $nowdaycheck->logoutStatus is not set
+                            // You might want to return an error response or handle it accordingly
+                            return Helper::res("logoutStatus is not set", 1, $nowdaycheck, false, true, false);
+                        }
+                        
+                        // if($nowdaycheck->logoutStatus==1){
+                        //     return Helper::res("Alredy login", 1,$nowdaycheck,true,false,true);
+                        // }else{
+                        //   return Helper::res("Alredy login", 1,$nowdaycheck,true,false,false); 
+                        // }
+                        
+                        
                     }else{
                         return response(['flag'=>0,'status'=>400, 'message'=>'not Login','todayLogin'=>false, 'todayLogout'=>false,'isHoliday'=>false]);
                     }
