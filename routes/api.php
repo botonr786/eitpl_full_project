@@ -22,6 +22,7 @@ Route::group(['prefix' => 'v1/', 'middleware' => ['api']], function () {
 	Route::post('login', 'App\Http\Controllers\Api\LoginController@doLogin');
 });
 Route::group(['middleware' => ['auth:api']], function () {
+    //Attendance Route
 	Route::post('attentences','App\Http\Controllers\Api\AttentenceController@attentenceAdd');
 	Route::get('listAttendence','App\Http\Controllers\Api\AttentenceController@attendenceList');
 	Route::post('graphAttendence','App\Http\Controllers\Api\AttentenceController@attendenceGraph');
@@ -30,6 +31,10 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('leave-type','App\Http\Controllers\Api\LeaveController@leaveType');
     Route::post('leave-list','App\Http\Controllers\Api\LeaveController@leaveList');
     Route::post('leave-apply','App\Http\Controllers\Api\LeaveController@leaveApply');
+
+    //Payroll Route
+    Route::post('payroll-list','App\Http\Controllers\Api\PayrollController@payrollList');
+
 });
 
 

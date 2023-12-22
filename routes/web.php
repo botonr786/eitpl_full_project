@@ -258,7 +258,7 @@ Route::get('payroll/dashboard', 'App\Http\Controllers\Payroll\PayrollGenerationC
     Route::post('payroll/add-yearly-bonus', 'App\Http\Controllers\Payroll\PayrollGenerationController@listAddYearlyBonus');
     Route::post('payroll/save-bonus-all', 'App\Http\Controllers\Payroll\PayrollGenerationController@SaveBonusAll');
     Route::post('payroll/update-bonus-all', 'App\Http\Controllers\Payroll\PayrollGenerationController@UpdateBonusAll');
-    
+
     //Payroll reports
     Route::get('payroll/vw-employeewise-view-payslip', 'App\Http\Controllers\Payroll\EmployeeWisePayslipController@getEmployeeWisePayslip');
     Route::post('payroll/vw-employeewise-view-payslip', 'App\Http\Controllers\Payroll\EmployeeWisePayslipController@showEmployeeWisePayslip');
@@ -2775,19 +2775,19 @@ Route::get('settings/get-add-row-acc/{row}', function ($row) {
                 $result .= '</select>
                          </td>
                          <td>
-                                                              
+
                            <input type="text" name="boardss[]" class="form-control">
                          </td>
                          <td>
-                                                               
+
                             <input type="date" name="yearofpassing[]" class="form-control">
                         </td>
                                                               <td>
-                                                                
+
                                                                 <input type="text" name="emp_grade[]" class="form-control">
                                                               </td>
                                                               <td>
-                                                              
+
                                                                 <input type="file" name="emp_document_upload[]" class="form-control">
                                                               </td>
 						 <td><button class="btn-success cmn_bg_style" type="button" id="add' . $row . '" onClick="accademinewrow(' . $row . ')" data-id="' . $row . '"> <i class="fas fa-plus"></i> </button>
@@ -2801,7 +2801,7 @@ Route::get('settings/get-add-row-pro/{row}', function ($row) {
 
     $result = ' <tr class="itemslot" id="' . $row . '" >
 					    <td>' . $row . '</td>
-						 
+
                      <td>
                        <input type="text" name="Organization[]" class="form-control" placeholder="Organization">
                      </td>
@@ -2809,15 +2809,15 @@ Route::get('settings/get-add-row-pro/{row}', function ($row) {
                        <input type="text" name="Desigination[]" class="form-control" placeholder="Desigination">
                        </td>
                        <td>
-                        
+
                          <input type="date" name="formdate[]" class="form-control">
                        </td>
                        <td>
-                         
+
                          <input type="date" name="todate[]" class="form-control">
                        </td>
                        <td>
-                       
+
                          <input type="file" name="emp1_document_upload[]" class="form-control">
                        </td>
 						 <td><button class="btn-success cmn_bg_style" type="button" id="add' . $row . '" onClick="proaddnewrow(' . $row . ')" data-id="' . $row . '"> <i class="fas fa-plus"></i> </button>
@@ -4977,9 +4977,9 @@ Route::get('pis/getcompanycountryById/{empid}', function ($empid) {
 });
 
 Route::get('pis/getjobpostByIdlkkk/{empid}', function ($empid) {
-  
+
     $email = Session::get('emp_email');
-    
+
     $Roledata = DB::table('registration')
         ->where('status', '=', 'active')
         ->where('email', '=', $email)
@@ -5008,7 +5008,7 @@ Route::get('pis/getjobpostByIdlkkk/{empid}', function ($empid) {
 });
 
 Route::get('pis/getjobpostByIdlkkkll/{empid}/{soc}', function ($empid, $soc) {
-   
+
     $email = Session::get('emp_email');
     $Roledata = DB::table('registration')
     ->where('status', '=', 'active')
@@ -5020,7 +5020,7 @@ Route::get('pis/getjobpostByIdlkkkll/{empid}/{soc}', function ($empid, $soc) {
         ->where('soc', '=', $soc)
         ->where('emid', '=', $Roledata->reg)
         ->first();
-    
+
     $employee_rs = DB::table('company_job_list')
 
         ->where('soc', '=', $desig_rs->soc)
