@@ -358,7 +358,7 @@ $words[$point = $point % 10] : '';
 							<td colspan="2">
 								<table style="width: 100%;">
 									<tr style="width: 100%;">
-										<td style="font-weight:500;"><b>Pay Day<br> 
+										<td style="font-weight:500;"><b>Pay Day<br>
 											<br><?php echo $no_of_pay_days = $current_month_days - $payroll_rs[0]->emp_absent_days; ?> </b>
 										</td>
 										<td style="font-weight:500;"><b>T.Day <br>
@@ -370,7 +370,7 @@ $words[$point = $point % 10] : '';
 									</tr>
 								</table>
 							</td>
-							
+
 						<td style="font-weight:600;text-align:right;" colspan="2"><span style="float: left;">Net Salary :</span> <img src="{{ asset('theme/payslip-img/rupee.png') }}" alt="" style="width: 8px;vertical-align: middle;"> {{number_format(($payroll_rs[0]->emp_net_salary),2)}}<br>
                            <!--<span style="float: left;">RUPEES <?php echo strtoupper($result); ?></span>-->
 						</td>

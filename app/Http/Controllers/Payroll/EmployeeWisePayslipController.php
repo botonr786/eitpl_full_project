@@ -119,7 +119,7 @@ class EmployeeWisePayslipController extends Controller
                         ->where('payroll_details.employee_id', '=', $emp_id)
                         ->where('payroll_details.id', '=', $pay_dtl_id)
                         ->select(
-                            'payroll_details.*', 
+                            'payroll_details.*',
                             'employee.*',
                             'bank_masters.master_bank_name',
                             'group_name_details.group_name',

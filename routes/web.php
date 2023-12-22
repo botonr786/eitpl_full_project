@@ -264,6 +264,7 @@ Route::get('payroll/dashboard', 'App\Http\Controllers\Payroll\PayrollGenerationC
     Route::post('payroll/vw-employeewise-view-payslip', 'App\Http\Controllers\Payroll\EmployeeWisePayslipController@showEmployeeWisePayslip');
     Route::get('payroll/payslip/{emp_id}/{pay_dtl_id}', 'App\Http\Controllers\Payroll\EmployeeWisePayslipController@viewPayrollDetails');
     Route::post('payroll/payslip/mail-to-employee', 'App\Http\Controllers\Payroll\EmployeeWisePayslipController@mailPayrollToEmployees');
+    Route::get('payroll/payslip-details/{emp_id}/{pay_dtl_id}', 'App\Http\Controllers\Api\PayrollController@viewPayrollDetails');
 
 //payroll end
 

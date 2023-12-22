@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     //Payroll Route
     Route::post('payroll-list','App\Http\Controllers\Api\PayrollController@payrollList');
 
+
 });
 
 
