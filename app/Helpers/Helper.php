@@ -17,20 +17,65 @@ class Helper
 	 * @version:    1.0.0.5
 	 * @author:     Somnath Mukherjee
 	 */
-    
-    public static function resp($message = '', $status = 200, $data = [],$token= [])
-	{
-		return [
-			'status'  => $status,
-			'message' => $message,
-			'data'    => $data,
-            'token' =>$token,
-		];
-	}
 
-     public static function rj($message = '', $headerStatus = 200, $data = [],$token= [])
-	{
-		$data = self::resp($message, $headerStatus, $data,$token);
-		return response()->json($data, $headerStatus);
-	}
+     public static function resp($message = '', $flag = 1, $data = [],$imagePath=[],$userPrimaryId=[], $token = [],$todayLogin=[])
+    {
+        $status = 200;
+        return [
+            'status'  => $status,
+            'flag'    => $flag,
+            'message' => $message,
+            'todayLogin' =>$todayLogin,
+            'data'    => $data,
+            'imagePath' =>$imagePath,
+            'token'   => $token,
+            'userPrimaryId' =>$userPrimaryId
+        ];
+    }
+
+    public static function rj($message = '', $flag = 1, $data = [],$imagePath=[],$userPrimaryId=[],$token = [],$todayLogin=[])
+    {
+        $response = self::resp($message, $flag,$data,$imagePath,$userPrimaryId, $token,$todayLogin);
+        return response()->json($response, $response['status']);
+    }
+
+    public static function responseData($message = '', $flag = 1, $data = [],$todayLogin=[],$isHoliday=[],$todayLogout=[])
+    {
+        $status = 200;
+        return [
+            'status'  => $status,
+            'flag'    => $flag,
+            'message' => $message,
+            'todayLogin' =>$todayLogin,
+            'isHoliday' => $isHoliday,
+            'todayLogout'=>$todayLogout,
+            'data' =>$data,
+        ];
+    }
+
+    public static function res($message = '', $flag = 1, $data = [],$todayLogin=[],$isHoliday=[],$todayLogout=[])
+    {
+        $response = self::responseData($message, $flag, $data,$todayLogin,$isHoliday,$todayLogout);
+        return response()->json($response, $response['status']);
+    }
+
+    public static function attendence($message = '', $flag = 1, $halfDayData = [],$fullDayData = [],$totakWorkingDay=[],$data=[])
+    {
+        $status = 200;
+        return [
+            'status'  => $status,
+            'flag'    => $flag,
+            'message' => $message,
+            'halfDay' => $halfDayData,
+            'fullDay' => $fullDayData,
+            'totalWorkingDay' => $totakWorkingDay,
+            'data' =>$data
+        ];
+    }
+
+    public static function resAttendence($message = '', $flag = 1, $halfDayData = [],$fullDayData = [],$totakWorkingDay=[],$data=[])
+    {
+        $response = self::attendence($message, $flag, $halfDayData,$fullDayData,$totakWorkingDay,$data);
+        return response()->json($response, $response['status']);
+    }
 }

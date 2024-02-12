@@ -17,11 +17,12 @@ class LoginController extends Controller
     {
         $this->_model = new UserModel();
     }
-    public $successStatus = 200;
 
     public function sendError($error, $errorMessages = [], $code = 404)
     {
         $response = [
+            "flag"=>0,
+            "status"=>400,
             "success" => false,
             "message" => $error,
         ];
@@ -33,8 +34,11 @@ class LoginController extends Controller
         return response()->json($response, $code);
     }
 
-    public function doLogin(Request $request)
+   public function doLogin(Request $request)
     {
+        // dd("hello");
+        $dynamicFlag = 1;
+
         try {
             $validator = Validator::make($request->all(), [
                 "email" => "required|email",
@@ -53,24 +57,66 @@ class LoginController extends Controller
             );
 
             if ($checkuser == null) {
-                return Helper::rj("Not a valid credential.", 401);
+                $dynamicFlag = 0;
+                return Helper::rj("Not a valid credential",$dynamicFlag);
             }
             $data = UserModel::where("email", $request->email)->first();
             $token = $data->createToken("token")->accessToken;
             if ($checkuser->user_type === "employer") {
-                return Helper::rj(
-                    "Employer login Success",
-                    $this->successStatus,
-                    $checkuser,
-                    $token
-                );
+                $user_id = $checkuser->employee_id;
+                $user = UserModel::where("employee_id", $user_id)->first();
+                $deviceToken = $request->device_token;
+
+                if ($user) {
+                     $user->update(['device_token' => $deviceToken]);
+                     $checkuser = UserModel::where("employee_id", $user_id)->first();
+                    return Helper::rj(
+                        "Employeer login success",
+                        $dynamicFlag,
+                        $checkuser,
+                        $token
+                    );
+                }else{
+                    $dynamicFlag=0;
+                    return Helper::rj(
+                        "User not found",
+                        $dynamicFlag,
+                        $checkuser,
+                        $token
+                    );
+                }
             } else {
-                return Helper::rj(
-                    "Employe login Success",
-                    $this->successStatus,
-                    $checkuser,
-                    $token
-                );
+                $user_id = $checkuser->employee_id;
+                $user = UserModel::where("employee_id", $user_id)->first();
+                $userPrimaryId=$user->id;
+                $deviceToken = $request->device_token;
+
+                $userImage=DB::table('employee')->where('emp_code',$user_id)->first();
+                $imagePath =$userImage->profileimage;
+                // dd($imagePath);
+                if ($user) {
+                     $user->update(['device_token' => $deviceToken]);
+                     $checkuser = UserModel::join('employee','employee.emp_code','users.employee_id')
+                     ->where("employee_id", $user_id)->first();
+
+                    return Helper::rj(
+                        "Employee login success",
+                        $dynamicFlag,
+                        $checkuser,
+                        $imagePath,
+                        $userPrimaryId,
+                        $token
+                    );
+                }else{
+                    $dynamicFlag=0;
+                    return Helper::rj(
+                        "User not found",
+                        $dynamicFlag,
+                        $checkuser,
+                        $userPrimaryId,
+                        $token
+                    );
+                }
             }
         } catch (Exception $e) {
             return Helper::rj("Server Error.", 500);
