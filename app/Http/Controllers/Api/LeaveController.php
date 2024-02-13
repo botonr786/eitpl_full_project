@@ -11,6 +11,7 @@ use App\Models\LeaveApprover\Leave_apply;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use \Illuminate\Auth\AuthenticationException;
 use Validator;
 use DB;
 Use \Carbon\Carbon;
@@ -36,7 +37,7 @@ class LeaveController extends Controller
             ],));
             }
 
-         }catch(Exception $e){
+         }catch(AuthenticationException $e){
             return Helper::rj("Server Error.", 500);
         }
     }
@@ -50,6 +51,7 @@ class LeaveController extends Controller
             ->where('leave_apply.employee_id', $emp_code)
             ->where('leave_apply.status', $type)
             ->select('leave_apply.*', 'leave_type.leave_type_name')
+            ->orderBy('leave_apply.id','desc')
             ->get();
             if(sizeof($result)){
             return response(array('flag'=>1, 'status'=>200,'message'=>'Leave Type List','response' => [
@@ -61,7 +63,7 @@ class LeaveController extends Controller
             ],));
             }
 
-         }catch(Exception $e){
+         }catch(AuthenticationException $e){
             return Helper::rj("Server Error.", 500);
         }
     }
@@ -120,7 +122,7 @@ class LeaveController extends Controller
                 ]);
             }
 
-         }catch(Exception $e){
+         }catch(AuthenticationException $e){
             return Helper::rj("Server Error.", 500);
         }
     }

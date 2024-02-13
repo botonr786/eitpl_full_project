@@ -39,17 +39,18 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //birthday list
     Route::post('birthday-list','App\Http\Controllers\Api\BirthdayReminderController@getBirthdayList');
-    
+
     //task list
     Route::post('task-list','App\Http\Controllers\Api\TaskController@getTaskList');
     Route::post('task-dashbord','App\Http\Controllers\Api\TaskController@dashbordTaskmanager');
-    Route::post('task-assignment','App\Http\Controllers\Api\TaskController@taskAssignmentEmployee');
+    Route::post('task-update','App\Http\Controllers\Api\TaskController@updateTask');
+    Route::post('task-count','App\Http\Controllers\Api\TaskController@taskStatusCountsForUser');
 
     //announcement list
     Route::post('announcement-list','App\Http\Controllers\Api\AnnouncementController@getAnnouncementList');
-    
 
-    
+
+
 });
 
 
