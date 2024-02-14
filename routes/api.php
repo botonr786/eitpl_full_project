@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('task-dashbord','App\Http\Controllers\Api\TaskController@dashbordTaskmanager');
     Route::post('task-update','App\Http\Controllers\Api\TaskController@updateTask');
     Route::post('task-count','App\Http\Controllers\Api\TaskController@taskStatusCountsForUser');
+    Route::post('task-label','App\Http\Controllers\Api\TaskController@taskLabel');
 
     //announcement list
     Route::post('announcement-list','App\Http\Controllers\Api\AnnouncementController@getAnnouncementList');
